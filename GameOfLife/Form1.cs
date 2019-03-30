@@ -8,14 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace GameOfLife
-{
-    public partial class Form1 : Form
-    {
-        public Form1()
-        {
-            InitializeComponent();
-            
-        }
+namespace GameOfLife {
+  public partial class Form1 : Form {
+    public Form1() {
+      InitializeComponent();
+      DoubleBuffered = true;
     }
+  }
 }
