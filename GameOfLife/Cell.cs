@@ -9,8 +9,8 @@ using System.Drawing;
 namespace GameOfLife {
   public class Cell /*: Button*/{
     State state;
-    int X;
-    int Y;
+    readonly int X;
+    readonly int Y;
     SolidBrush br; /////////
     int Size;
 
@@ -60,9 +60,10 @@ namespace GameOfLife {
       var ns = Enum.GetValues(typeof(Neighbour));
       foreach (Neighbour n in ns) {
         var p = GetNeighbour(n);
-        if (InBounds(p, b) && (b[p].state == State.Alive || b[p].state == State.Dying)) {
+        if (b.InBounds(p) && (b[p].state == State.Alive || b[p].state == State.Dying)) {
           count++;
         }
+        if(count == 4) { break; }
       }
       if (count == 3) {
         if (state == State.Dead) {
@@ -77,15 +78,24 @@ namespace GameOfLife {
     }
 
     public void Tick(Board b) {
-      foreach (Cell c in b) {
-        if (c.state == State.Spawning) {
-          c.state = State.Alive;
-        }
-        else if (c.state == State.Dying) {
-          c.state = State.Dead;
-        }
+      if (state == State.Spawning) {
+        state = State.Alive;
+      }
+      else if (state == State.Dying) {
+        state = State.Dead;
       }
     }
+
+    public void Toggle() {
+      if(state == State.Alive || state == State.Dying) {
+        state = State.Dead;
+      }
+      else if(state == State.Dead || state == State.Spawning) {
+        state = State.Alive;
+      }
+    }
+
+    public void Reset() => state = State.Dead;
 
     private Point GetNeighbour(Neighbour n) {
       switch (n) {
@@ -100,11 +110,6 @@ namespace GameOfLife {
       }
       return new Point(0, 0);
     }
-
-    private bool InBounds(Point p, Board b) {
-      return p.X >= 0 && p.X < b.Size && p.Y >= 0 && p.Y < b.Size;
-    }
-    private bool InBounds(int y, int x, Board b) => InBounds(new Point(x, y), b);
 
 
 
